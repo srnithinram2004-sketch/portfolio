@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nithinram S.R — Infrastructure & Full-Stack Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#070b14;
+    --bg-1:#0c1526;
+    --glass:rgba(255,255,255,0.055);
+    --glass-border:rgba(255,255,255,0.14);
+    --glass-hi:rgba(255,255,255,0.10);
+    --text-0:#eaf0f7;
+    --text-1:#a9b7c9;
+    --text-2:#71829a;
+    --teal:#5EEAD4;
+    --amber:#fbbf6a;
+    --line:rgba(255,255,255,0.09);
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 600px at 15% -10%, rgba(45,212,191,0.12), transparent 60%),
+      radial-gradient(ellipse 800px 700px at 90% 15%, rgba(251,191,106,0.07), transparent 55%),
+      radial-gradient(ellipse 1000px 800px at 50% 100%, rgba(45,150,212,0.10), transparent 55%),
+      linear-gradient(180deg, var(--bg-0), var(--bg-1) 40%, var(--bg-0) 100%);
+    color:var(--text-0);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  #net-canvas{ position:fixed; inset:0; width:100%; height:100%; z-index:0; opacity:0.55; }
+  .wrap{ position:relative; z-index:1; }
+  h1,h2,h3,.display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.01em; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:rgba(94,234,212,0.3); }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--teal); outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px clamp(20px,5vw,64px);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    background:rgba(7,11,20,0.45);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{ font-weight:700; font-size:1.1rem; letter-spacing:0.02em; }
+  .logo span{ color:var(--teal); }
+  .navlinks{ display:none; gap:32px; font-size:0.92rem; color:var(--text-1); }
+  @media (min-width:820px){ .navlinks{ display:flex; } }
+  .navlinks a{ position:relative; transition:color .25s; }
+  .navlinks a:hover{ color:var(--text-0); }
+  .navlinks a::after{
+    content:''; position:absolute; left:0; bottom:-6px; width:0; height:1px; background:var(--teal);
+    transition:width .25s;
+  }
+  .navlinks a:hover::after{ width:100%; }
+  .nav-status{ display:flex; align-items:center; gap:8px; font-size:0.78rem; color:var(--teal); font-family:'JetBrains Mono',monospace; }
+  .dot{ width:7px; height:7px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal); animation:pulse 2s infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.35; } }
+
+  section{ padding:120px clamp(20px,6vw,64px) 40px; max-width:1180px; margin:0 auto; position:relative; }
+
+  .hero{ min-height:100vh; display:flex; align-items:center; padding-top:100px; gap:60px; flex-wrap:wrap; }
+  .hero-text{ flex:1 1 480px; }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--teal);
+    display:inline-flex; align-items:center; gap:8px; margin-bottom:22px;
+    border:1px solid rgba(94,234,212,0.3); padding:6px 14px; border-radius:100px;
+    background:rgba(94,234,212,0.06);
+  }
+  .hero h1{ font-size:clamp(2.4rem, 6vw, 4.2rem); font-weight:700; line-height:1.06; margin-bottom:20px; }
+  .hero h1 .accent{
+    background:linear-gradient(100deg, var(--teal), #7dd3fc 60%, var(--amber));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{ font-size:1.08rem; color:var(--text-1); max-width:520px; line-height:1.7; margin-bottom:34px; }
+  .role-line{ font-family:'JetBrains Mono',monospace; font-size:1rem; color:var(--text-1); margin-bottom:8px; }
+  .role-line .cursor{ display:inline-block; width:9px; height:1.1em; background:var(--teal); vertical-align:middle; margin-left:2px; animation:blink 1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .cta-row{ display:flex; gap:16px; flex-wrap:wrap; }
+  .btn{
+    padding:13px 28px; border-radius:12px; font-size:0.92rem; font-weight:600; cursor:pointer;
+    border:1px solid var(--glass-border); transition:transform .25s, box-shadow .25s, background .25s;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{ background:linear-gradient(120deg, var(--teal), #38bdf8); color:#04141a; border:none; }
+  .btn-primary:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(94,234,212,0.5); }
+  .btn-ghost{ background:var(--glass); color:var(--text-0); backdrop-filter:blur(10px); }
+  .btn-ghost:hover{ transform:translateY(-3px); background:var(--glass-hi); }
+
+  .hero-visual{ flex:1 1 380px; display:flex; justify-content:center; perspective:1200px; }
+  .term-card{
+    width:100%; max-width:420px; border-radius:var(--radius);
+    background:var(--glass); border:1px solid var(--glass-border);
+    backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+    transform-style:preserve-3d; transition:transform .15s ease-out;
+    animation:float 6s ease-in-out infinite;
+  }
+  @keyframes float{ 0%,100%{ transform:translateY(0px) rotateX(4deg) rotateY(-6deg); } 50%{ transform:translateY(-14px) rotateX(2deg) rotateY(-3deg); } }
+  .term-bar{ display:flex; gap:7px; padding:16px 18px; border-bottom:1px solid var(--line); }
+  .term-bar span{ width:11px; height:11px; border-radius:50%; }
+  .term-bar span:nth-child(1){ background:#ff5f57; } .term-bar span:nth-child(2){ background:#febc2e; } .term-bar span:nth-child(3){ background:#28c840; }
+  .term-body{ padding:22px 24px 26px; font-family:'JetBrains Mono',monospace; font-size:0.84rem; color:var(--text-1); line-height:1.9; }
+  .term-body .k{ color:var(--teal); } .term-body .s{ color:var(--amber); }
+  .term-body .out{ color:var(--text-0); }
+
+  .sec-head{ margin-bottom:52px; }
+  .sec-eyebrow{ font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--teal); margin-bottom:10px; letter-spacing:0.05em; text-transform:uppercase;}
+  .sec-head h2{ font-size:clamp(1.8rem,4vw,2.6rem); font-weight:600; }
+  .sec-head p{ color:var(--text-1); margin-top:12px; max-width:600px; }
+
+  .about-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:32px; }
+  @media (max-width:760px){ .about-grid{ grid-template-columns:1fr; } }
+  .glass-card{
+    background:var(--glass); border:1px solid var(--glass-border); border-radius:var(--radius);
+    backdrop-filter:blur(18px) saturate(150%); -webkit-backdrop-filter:blur(18px) saturate(150%);
+    padding:32px; box-shadow:0 20px 40px -24px rgba(0,0,0,0.5);
+  }
+  .about-grid p{ color:var(--text-1); line-height:1.8; margin-bottom:14px; }
+  .stat-list{ display:flex; flex-direction:column; gap:20px; }
+  .stat{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid var(--line); padding-bottom:14px; gap:12px; }
+  .stat:last-child{ border-bottom:none; }
+  .stat-label{ color:var(--text-2); font-size:0.85rem; font-family:'JetBrains Mono',monospace; }
+  .stat-value{ font-family:'Space Grotesk',sans-serif; font-weight:600; text-align:right; }
+
+  .skills-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; }
+  .skill-card h3{ font-size:1rem; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+  .skill-card h3 .ic{ width:8px; height:8px; border-radius:2px; background:var(--teal); transform:rotate(45deg); flex-shrink:0;}
+  .tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .tag{
+    font-family:'JetBrains Mono',monospace; font-size:0.76rem; color:var(--text-1);
+    padding:7px 12px; border-radius:8px; background:rgba(255,255,255,0.04); border:1px solid var(--line);
+    transition:border-color .2s, color .2s, transform .2s;
+  }
+  .tag:hover{ border-color:var(--teal); color:var(--teal); transform:translateY(-2px); }
+
+  .timeline{ display:flex; flex-direction:column; gap:0; }
+  .tl-item{ display:grid; grid-template-columns:120px 24px 1fr; gap:0; position:relative; }
+  .tl-date{ font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--text-2); padding-top:6px; }
+  .tl-rail{ display:flex; flex-direction:column; align-items:center; }
+  .tl-dot{ width:12px; height:12px; border-radius:50%; background:var(--bg-1); border:2px solid var(--teal); margin-top:6px; box-shadow:0 0 12px rgba(94,234,212,0.5); flex-shrink:0;}
+  .tl-line{ flex:1; width:1px; background:var(--line); margin-top:4px; }
+  .tl-content{ padding:0 0 46px 20px; }
+  .tl-content h3{ font-size:1.08rem; margin-bottom:4px; }
+  .tl-content .org{ color:var(--teal); font-size:0.88rem; margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+  .tl-content p{ color:var(--text-1); font-size:0.92rem; line-height:1.7; }
+
+  .projects-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:26px; perspective:1000px; }
+  .proj-card{
+    border-radius:var(--radius); background:var(--glass); border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px) saturate(150%); -webkit-backdrop-filter:blur(18px) saturate(150%);
+    padding:28px; transform-style:preserve-3d; transition:transform .12s ease-out, box-shadow .3s;
+  }
+  .proj-card:hover{ box-shadow:0 30px 50px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(94,234,212,0.25); }
+  .proj-top{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; gap:10px;}
+  .proj-year{ font-family:'JetBrains Mono',monospace; font-size:0.76rem; color:var(--amber); white-space:nowrap; }
+  .proj-card h3{ font-size:1.12rem; margin-bottom:10px; }
+  .proj-card p{ color:var(--text-1); font-size:0.9rem; line-height:1.65; margin-bottom:16px; }
+  .proj-lang{ font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--teal); }
+
+  .cert-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; }
+  .cert-card{ display:flex; gap:16px; align-items:flex-start; padding:22px; }
+  .cert-icon{
+    width:38px; height:38px; border-radius:10px; background:rgba(94,234,212,0.1); border:1px solid rgba(94,234,212,0.3);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--teal); font-weight:700; font-family:'Space Grotesk',sans-serif; font-size:0.85rem;
+  }
+  .cert-card h4{ font-size:0.95rem; margin-bottom:4px; }
+  .cert-card span{ color:var(--text-2); font-size:0.8rem; font-family:'JetBrains Mono',monospace; }
+
+  .contact-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:32px; }
+  @media (max-width:760px){ .contact-grid{ grid-template-columns:1fr; } }
+  .contact-info a{ display:flex; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--line); color:var(--text-1); transition:color .2s; font-size:0.94rem; }
+  .contact-info a:hover{ color:var(--teal); }
+  .contact-info a:last-child{ border-bottom:none; }
+  .ic-box{ width:34px; height:34px; border-radius:9px; background:rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  form{ display:flex; flex-direction:column; gap:16px; }
+  .field label{ display:block; font-size:0.78rem; font-family:'JetBrains Mono',monospace; color:var(--text-2); margin-bottom:8px; }
+  .field input, .field textarea{
+    width:100%; background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:10px;
+    padding:13px 14px; color:var(--text-0); font-family:'Inter',sans-serif; font-size:0.94rem; resize:vertical;
+    transition:border-color .2s, background .2s;
+  }
+  .field input:focus, .field textarea:focus{ border-color:var(--teal); background:rgba(255,255,255,0.06); }
+  .field textarea{ min-height:120px; }
+  .form-note{ font-size:0.78rem; color:var(--text-2); }
+  #form-status{ font-size:0.85rem; margin-top:4px; min-height:20px; }
+  #form-status.ok{ color:var(--teal); }
+  #form-status.err{ color:#fb7185; }
+
+  footer{ text-align:center; padding:50px 20px 40px; color:var(--text-2); font-size:0.85rem; font-family:'JetBrains Mono',monospace; }
+</style>
+</head>
+<body>
+
+<canvas id="net-canvas"></canvas>
+
+<div class="wrap">
+
+  <nav>
+    <div class="logo">NR<span>.</span>SR</div>
+    <div class="navlinks">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#certifications">Certifications</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-status"><span class="dot"></span> AVAILABLE</div>
+  </nav>
+
+  <section class="hero" id="top">
+    <div class="hero-text">
+      <div class="eyebrow"><span class="dot"></span> Coimbatore, Tamil Nadu — B.Sc IT</div>
+      <h1>Nithinram S.R —<br><span class="accent">infra by day, code by choice.</span></h1>
+      <div class="role-line">$ whoami <span class="cursor"></span></div>
+      <p>Infrastructure support engineer working across Windows Server, Active Directory and Azure, with a full-stack developer's instinct for building things — from PowerShell automation to Python, PHP and JavaScript projects.</p>
+      <div class="cta-row">
+        <a href="#contact" class="btn btn-primary">Send a message →</a>
+        <a href="#projects" class="btn btn-ghost">View projects</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="term-card" id="term-card">
+        <div class="term-bar"><span></span><span></span><span></span></div>
+        <div class="term-body">
+          <div><span class="k">name</span>: <span class="out">Nithinram S.R</span></div>
+          <div><span class="k">role</span>: <span class="out">Infra Support · Full-Stack Dev</span></div>
+          <div><span class="k">stack</span>: <span class="s">[Windows Server, Azure, AD,</span></div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">PowerShell, Python, PHP, JS]</span></div>
+          <div><span class="k">education</span>: <span class="out">B.Sc IT, KASC College</span></div>
+          <div><span class="k">based_in</span>: <span class="out">Coimbatore, IN</span></div>
+          <div><span class="k">status</span>: <span class="s">"open to opportunities"</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// about</div>
+      <h2>Two sides of the same system.</h2>
+    </div>
+    <div class="about-grid">
+      <div class="glass-card">
+        <p>I started out building things — web apps in PHP and Python, machine learning experiments, campus tools — during my B.Sc IT at KASC College. That instinct for building carried into my current role in infrastructure support, where I keep the systems underneath those apps running: Windows Server, Active Directory, DNS/DHCP, and Azure environments.</p>
+        <p>I like that combination. Understanding how servers, networks and identity systems actually work makes me a better developer, and knowing how to build software makes me faster at automating infrastructure with PowerShell, Ansible and Terraform.</p>
+        <p>Currently working toward my AZ-104 Azure Administrator certification, and always looking for the next system worth understanding.</p>
+      </div>
+      <div class="glass-card stat-list">
+        <div class="stat"><span class="stat-label">DEGREE</span><span class="stat-value">B.Sc Information Technology</span></div>
+        <div class="stat"><span class="stat-label">COLLEGE</span><span class="stat-value">KASC College, Coimbatore</span></div>
+        <div class="stat"><span class="stat-label">SCORE</span><span class="stat-value">75%</span></div>
+        <div class="stat"><span class="stat-label">FOCUS</span><span class="stat-value">Infra + Full-Stack Dev</span></div>
+        <div class="stat"><span class="stat-label">LOCATION</span><span class="stat-value">Coimbatore, TN</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// skills</div>
+      <h2>What I work with.</h2>
+      <p>Grouped by the two halves of the job — keeping infrastructure running, and building the software that sits on top of it.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="glass-card skill-card">
+        <h3><span class="ic"></span>Infrastructure & Cloud</h3>
+        <div class="tags">
+          <span class="tag">Windows Server</span><span class="tag">Active Directory</span>
+          <span class="tag">DNS / DHCP</span><span class="tag">Microsoft Azure</span>
+          <span class="tag">PowerShell</span><span class="tag">Ansible</span><span class="tag">Terraform</span>
+        </div>
+      </div>
+      <div class="glass-card skill-card">
+        <h3><span class="ic"></span>Web Development</h3>
+        <div class="tags">
+          <span class="tag">HTML / CSS</span><span class="tag">JavaScript</span>
+          <span class="tag">Python</span><span class="tag">PHP</span><span class="tag">MySQL</span>
+          <span class="tag">Flask</span><span class="tag">Django</span>
+        </div>
+      </div>
+      <div class="glass-card skill-card">
+        <h3><span class="ic"></span>Tools & Practices</h3>
+        <div class="tags">
+          <span class="tag">Git / GitHub</span><span class="tag">MS Office</span>
+          <span class="tag">Responsive Design</span><span class="tag">REST APIs</span>
+        </div>
+      </div>
+      <div class="glass-card skill-card">
+        <h3><span class="ic"></span>Working Style</h3>
+        <div class="tags">
+          <span class="tag">Problem Solving</span><span class="tag">Teamwork</span>
+          <span class="tag">Communication</span><span class="tag">Adaptability</span><span class="tag">Attention to Detail</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// experience</div>
+      <h2>Where I've worked.</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">Current</div>
+        <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <h3>Infrastructure Support Associate</h3>
+          <div class="org">Accenture — Data Center Windows & Cloud Stream, Coimbatore</div>
+          <p>L1 infrastructure support covering Windows Server, Active Directory, DNS/DHCP and Azure environments, with automation work in PowerShell, Ansible and Terraform. Preparing for internal certification and the AZ-104 Azure Administrator exam.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">2025</div>
+        <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <h3>Python Development Intern</h3>
+          <div class="org">Nexus Global Solutions, Coimbatore</div>
+          <p>Built practical skills in Python and machine learning, collaborating with the team to work through applied problems and implement solutions.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">May – Jun 2024</div>
+        <div class="tl-rail"><div class="tl-dot"></div></div>
+        <div class="tl-content">
+          <h3>Full-Stack Development Intern</h3>
+          <div class="org">Net Tel Solutions Pvt Ltd, Coimbatore</div>
+          <p>Full-stack web development with PHP and MySQL. Gained hands-on experience analyzing problems and collaborating with the team on effective solutions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// projects</div>
+      <h2>Things I've built.</h2>
+      <p>Move your cursor over a card — it tilts, just like everything else here.</p>
+    </div>
+    <div class="projects-grid">
+      <div class="proj-card tilt-card">
+        <div class="proj-top"><h3 style="margin-bottom:0;">Cryptocurrency Price Prediction</h3><span class="proj-year">2025</span></div>
+        <p>A machine learning model that forecasts cryptocurrency prices by analyzing historical data and market trends to predict future price movements.</p>
+        <span class="proj-lang">Python · Machine Learning</span>
+      </div>
+      <div class="proj-card tilt-card">
+        <div class="proj-top"><h3 style="margin-bottom:0;">Campus Recruitment System</h3><span class="proj-year">2024</span></div>
+        <p>A web platform where students can enquire about placement details. Submissions are reviewed through an admin login, with action taken from there.</p>
+        <span class="proj-lang">PHP · MySQL</span>
+      </div>
+      <div class="proj-card tilt-card">
+        <div class="proj-top"><h3 style="margin-bottom:0;">Smart UV Bins</h3><span class="proj-year">2023</span></div>
+        <p>Proposed at Smart India Hackathon: a smart bin concept that sterilizes harmful bacteria on trash and plastics to reduce the spread of disease.</p>
+        <span class="proj-lang">Concept · Hardware/IoT</span>
+      </div>
+      <div class="proj-card tilt-card">
+        <div class="proj-top"><h3 style="margin-bottom:0;">Gemini AI & Site Clones</h3><span class="proj-year">2023–24</span></div>
+        <p>A set of practice builds: integrating the Gemini API into small tools, and rebuilding sites like YouTube and law-firm landing pages to sharpen front-end skills.</p>
+        <span class="proj-lang">JavaScript · APIs</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="certifications">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// certifications</div>
+      <h2>Courses & credentials.</h2>
+    </div>
+    <div class="cert-grid">
+      <div class="glass-card cert-card"><div class="cert-icon">Py</div><div><h4>Python for Web Development</h4><span>ICT Academy · 2025</span></div></div>
+      <div class="glass-card cert-card"><div class="cert-icon">Py</div><div><h4>Python</h4><span>Nexus Global Solutions · 2025</span></div></div>
+      <div class="glass-card cert-card"><div class="cert-icon">Sk</div><div><h4>Soft Skill Program</h4><span>Cambridge University · 2025</span></div></div>
+      <div class="glass-card cert-card"><div class="cert-icon">Fs</div><div><h4>Full-Stack with PHP</h4><span>Net Tel Solutions · 2024</span></div></div>
+      <div class="glass-card cert-card"><div class="cert-icon">Db</div><div><h4>PHP and MySQL with Project</h4><span>Udemy · 2024</span></div></div>
+      <div class="glass-card cert-card"><div class="cert-icon">Js</div><div><h4>HTML, CSS, JavaScript</h4><span>Udemy · 2024</span></div></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="sec-head">
+      <div class="sec-eyebrow">// contact</div>
+      <h2>Let's talk.</h2>
+      <p>Send a message and it'll land straight in my inbox — no middleman.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="glass-card contact-info">
+        <a href="mailto:nithinramsr2004@outlook.com"><span class="ic-box">✉</span> nithinramsr2004@outlook.com</a>
+        <a href="tel:+918668010466"><span class="ic-box">☎</span> +91 86680 10466</a>
+        <a href="https://github.com/sr-nithinram" target="_blank" rel="noopener"><span class="ic-box">⌥</span> github.com/sr-nithinram</a>
+        <a href="https://www.linkedin.com/in/srnithinram" target="_blank" rel="noopener"><span class="ic-box">in</span> linkedin.com/in/srnithinram</a>
+        <a href="#top"><span class="ic-box">◎</span> Coimbatore, Tamil Nadu, India</a>
+      </div>
+      <div class="glass-card">
+        <form id="contact-form">
+          <div class="field">
+            <label for="f-name">NAME</label>
+            <input type="text" id="f-name" name="name" required placeholder="Your name">
+          </div>
+          <div class="field">
+            <label for="f-email">EMAIL</label>
+            <input type="email" id="f-email" name="email" required placeholder="you@example.com">
+          </div>
+          <div class="field">
+            <label for="f-message">MESSAGE</label>
+            <textarea id="f-message" name="message" required placeholder="What's on your mind?"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" id="submit-btn">Send message →</button>
+          <div id="form-status"></div>
+          <div class="form-note">Delivered via Formspree directly to nithinramsr2004@outlook.com</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>designed &amp; built by Nithinram S.R — © 2026</footer>
+
+</div>
+
+<script>
+const canvas = document.getElementById('net-canvas');
+const ctx = canvas.getContext('2d');
+let w, h, nodes;
+const NODE_COUNT_BASE = 70;
+
+function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+window.addEventListener('resize', resize);
+resize();
+
+function initNodes(){
+  const count = Math.min(NODE_COUNT_BASE, Math.floor((w*h)/22000));
+  nodes = Array.from({length: count}, () => ({
+    x: Math.random()*w, y: Math.random()*h,
+    vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25,
+    r: Math.random()*1.6 + 0.6
+  }));
+}
+initNodes();
+window.addEventListener('resize', () => { initNodes(); });
+
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function drawNet(){
+  ctx.clearRect(0,0,w,h);
+  const maxDist = 150;
+  for(let i=0;i<nodes.length;i++){
+    const a = nodes[i];
+    if(!prefersReduced){
+      a.x += a.vx; a.y += a.vy;
+      if(a.x < 0 || a.x > w) a.vx *= -1;
+      if(a.y < 0 || a.y > h) a.vy *= -1;
+    }
+    for(let j=i+1;j<nodes.length;j++){
+      const b = nodes[j];
+      const dx = a.x-b.x, dy = a.y-b.y;
+      const dist = Math.sqrt(dx*dx+dy*dy);
+      if(dist < maxDist){
+        const op = (1 - dist/maxDist) * 0.35;
+        ctx.strokeStyle = `rgba(94,234,212,${op})`;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+      }
+    }
+  }
+  for(const n of nodes){
+    ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(148,197,255,0.55)'; ctx.fill();
+  }
+  requestAnimationFrame(drawNet);
+}
+drawNet();
+
+const termCard = document.getElementById('term-card');
+if(!prefersReduced){
+  window.addEventListener('mousemove', (e) => {
+    const rx = (e.clientY / window.innerHeight - 0.5) * -10;
+    const ry = (e.clientX / window.innerWidth - 0.5) * 14;
+    termCard.style.transform = `rotateX(${rx + 4}deg) rotateY(${ry - 6}deg)`;
+  });
+}
+
+document.querySelectorAll('.tilt-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    if(prefersReduced) return;
+    const rect = card.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = `rotateX(${py * -10}deg) rotateY(${px * 12}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'rotateX(0) rotateY(0) translateY(0)';
+  });
+});
+
+const form = document.getElementById('contact-form');
+const statusEl = document.getElementById('form-status');
+const submitBtn = document.getElementById('submit-btn');
+
+// Replace YOUR_FORM_ID once you create your Formspree form (see instructions below the site).
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+  statusEl.textContent = '';
+  statusEl.className = '';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  const data = new FormData(form);
+
+  try{
+    const res = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST', body: data, headers: { 'Accept': 'application/json' }
+    });
+    if(res.ok){
+      statusEl.textContent = "Message sent — thank you! I'll get back to you soon.";
+      statusEl.className = 'ok';
+      form.reset();
+    } else {
+      throw new Error('Request failed');
+    }
+  }catch(err){
+    statusEl.textContent = 'Could not send right now — please email nithinramsr2004@outlook.com directly.';
+    statusEl.className = 'err';
+  }finally{
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send message →';
+  }
+});
+</script>
+</body>
+</html>
