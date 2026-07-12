@@ -4,6 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nithinram S.R — Infrastructure & Full-Stack Developer</title>
+<meta name="description" content="Nithinram S.R is an Infrastructure Support Associate at Accenture (Windows Server, Active Directory, Azure) and full-stack developer based in Coimbatore, India. Explore his skills, experience, projects and certifications.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://sr.nithinram.workers.dev/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nithinram S.R — Infrastructure & Full-Stack Developer">
+<meta property="og:description" content="Infrastructure Support Associate at Accenture and full-stack developer based in Coimbatore, India. Windows Server, Active Directory, Azure, and web development.">
+<meta property="og:url" content="https://sr.nithinram.workers.dev/">
+<meta property="og:image" content="https://sr.nithinram.workers.dev/images/Profile.jpg">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nithinram S.R — Infrastructure & Full-Stack Developer">
+<meta name="twitter:description" content="Infrastructure Support Associate at Accenture and full-stack developer based in Coimbatore, India.">
+<meta name="twitter:image" content="https://sr.nithinram.workers.dev/images/Profile.jpg">
+
+<!-- Structured data: helps Google understand the page and can surface
+     the section links below as a "sitelinks" list under the search
+     result. Google decides on its own whether to show them (usually
+     needs some traffic/authority first) — this just gives it the
+     signal to work with. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Nithinram S.R",
+  "jobTitle": "Infrastructure Support Associate",
+  "worksFor": { "@type": "Organization", "name": "Accenture" },
+  "url": "https://sr.nithinram.workers.dev/",
+  "image": "https://sr.nithinram.workers.dev/images/Profile.jpg",
+  "email": "mailto:nithinramsr2004@outlook.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Coimbatore", "addressRegion": "Tamil Nadu", "addressCountry": "IN" },
+  "sameAs": []
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Nithinram S.R — Portfolio",
+  "url": "https://sr.nithinram.workers.dev/"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    { "@type": "SiteNavigationElement", "position": 1, "name": "About",          "url": "https://sr.nithinram.workers.dev/#about" },
+    { "@type": "SiteNavigationElement", "position": 2, "name": "Skills",         "url": "https://sr.nithinram.workers.dev/#skills" },
+    { "@type": "SiteNavigationElement", "position": 3, "name": "Experience",     "url": "https://sr.nithinram.workers.dev/#experience" },
+    { "@type": "SiteNavigationElement", "position": 4, "name": "Projects",       "url": "https://sr.nithinram.workers.dev/#projects" },
+    { "@type": "SiteNavigationElement", "position": 5, "name": "Certifications", "url": "https://sr.nithinram.workers.dev/#certifications" },
+    { "@type": "SiteNavigationElement", "position": 6, "name": "Contact",        "url": "https://sr.nithinram.workers.dev/#contact" }
+  ]
+}
+</script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G2YYGGT74S"></script>
 <script>
@@ -666,6 +724,7 @@ const bootOverlay = document.getElementById('boot-overlay');
 function finishBoot(){
   document.body.classList.add('booted');
   document.body.style.overflow = '';
+  netStarted = true;
   setTimeout(() => {
     bootOverlay.classList.add('hide');
     setTimeout(() => bootOverlay.remove(), 750);
@@ -677,7 +736,7 @@ function finishBoot(){
   }, 300);
 }
 
-if(isLowPower){
+if(prefersReduced){
   bootOverlay.remove();
   document.body.classList.add('booted');
 } else {
@@ -693,27 +752,48 @@ if(isLowPower){
   const fillEl = document.getElementById('boot-fill');
   const pctEl = document.getElementById('boot-pct');
   let li = 0;
-  function nextLine(){
-    if(li >= bootLines.length){ finishBoot(); return; }
-    const p = document.createElement('div');
-    p.className = 'boot-line-item';
-    logEl.appendChild(p);
-    let ci = 0;
-    const text = bootLines[li];
-    const iv = setInterval(() => {
-      p.textContent += text[ci];
-      ci++;
-      if(ci >= text.length){
-        clearInterval(iv);
-        li++;
-        const pct = Math.round((li / bootLines.length) * 100);
-        fillEl.style.width = pct + '%';
-        pctEl.textContent = pct + '%';
-        setTimeout(nextLine, 140);
-      }
-    }, 16);
+
+  // Mobile/low-power: reveal whole lines at once instead of typing
+  // char-by-char. The per-character setInterval (60+ DOM writes per
+  // line) was competing with layout/paint right at page load, which is
+  // exactly when a phone is busiest -- that's what read as "glitchy".
+  if(isLowPower){
+    function nextLineFast(){
+      if(li >= bootLines.length){ finishBoot(); return; }
+      const p = document.createElement('div');
+      p.className = 'boot-line-item';
+      p.textContent = bootLines[li];
+      logEl.appendChild(p);
+      li++;
+      const pct = Math.round((li / bootLines.length) * 100);
+      fillEl.style.width = pct + '%';
+      pctEl.textContent = pct + '%';
+      setTimeout(nextLineFast, 180);
+    }
+    nextLineFast();
+  } else {
+    function nextLine(){
+      if(li >= bootLines.length){ finishBoot(); return; }
+      const p = document.createElement('div');
+      p.className = 'boot-line-item';
+      logEl.appendChild(p);
+      let ci = 0;
+      const text = bootLines[li];
+      const iv = setInterval(() => {
+        p.textContent += text[ci];
+        ci++;
+        if(ci >= text.length){
+          clearInterval(iv);
+          li++;
+          const pct = Math.round((li / bootLines.length) * 100);
+          fillEl.style.width = pct + '%';
+          pctEl.textContent = pct + '%';
+          setTimeout(nextLine, 140);
+        }
+      }, 16);
+    }
+    nextLine();
   }
-  nextLine();
 }
 
 /* ---------- live clock (Asia/Kolkata) ---------- */
@@ -752,8 +832,11 @@ window.addEventListener('resize', () => { initNodes(); });
 let lastFrameTime = 0;
 const FRAME_INTERVAL = isLowPower ? 33 : 0; // cap mobile to ~30fps, desktop stays uncapped
 
+let netStarted = document.body.classList.contains('booted');
+
 function drawNet(ts){
   requestAnimationFrame(drawNet);
+  if(!netStarted) return; // paused behind the boot overlay
   if(FRAME_INTERVAL && ts - lastFrameTime < FRAME_INTERVAL) return;
   lastFrameTime = ts;
 
