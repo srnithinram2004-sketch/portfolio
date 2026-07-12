@@ -131,6 +131,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .hero h1{ font-size:clamp(2rem, 8vw, 2.75rem); }
     .hero p{ font-size:1rem; margin-bottom:24px; }
     .hero-visual{ order:-1; width:100%; max-width:320px; margin:0 auto; }
+    .device-note{ display:inline-flex; }
     .photo-card{ max-width:320px; animation:none; transform:none; }
     .scan-frame{ width:78%; }
     .metrics{ grid-template-columns:repeat(2, minmax(0, 1fr)); margin-bottom:56px; }
@@ -291,6 +292,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .whoami-out .out{ color:var(--text-0); }
 
   .hero p{ font-size:1.05rem; color:var(--text-1); max-width:520px; line-height:1.7; margin-bottom:34px; }
+
+  .device-note{
+    display:none; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--amber);
+    border:1px solid rgba(255,176,32,0.3); background:rgba(255,176,32,0.06);
+    padding:8px 14px; border-radius:100px; margin:-14px 0 26px; max-width:fit-content;
+  }
+  .device-note .dot{ background:var(--amber); box-shadow:0 0 8px var(--amber); flex-shrink:0; }
 
   .cta-row{ display:flex; gap:16px; flex-wrap:wrap; }
   .btn{
@@ -523,7 +532,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="wrap">
 
   <nav>
-    <div class="logo"><span>Nithin</span></div>
+    <div class="logo">NR<span>.</span>SR</div>
     <div class="navlinks">
       <a href="#about">About</a>
       <a href="#skills">Skills</a>
@@ -555,6 +564,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div>&gt; stack: <span class="s">[Windows Server, Azure, AD, PowerShell, Python, PHP, JS]</span></div>
       </div>
       <p>Infrastructure support engineer working across Windows Server, Active Directory and Azure, with a full-stack developer's instinct for building things — from PowerShell automation to Python, PHP and JavaScript projects.</p>
+      <div class="device-note"><span class="dot"></span> Best viewed on a laptop — some effects are trimmed down on mobile.</div>
       <div class="cta-row">
         <a href="#contact" class="btn btn-primary">Send a message →</a>
         <a href="#projects" class="btn btn-ghost">View projects</a>
