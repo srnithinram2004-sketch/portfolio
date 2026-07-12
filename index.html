@@ -64,6 +64,44 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
   }
 
+  @media (max-width: 900px){
+    #scan-sweep, #hud-frame{ display:none; }
+    nav{ padding:14px 16px; }
+    .nav-status{ display:none; }
+    section{ padding:110px 16px 28px; }
+    .hero{ min-height:auto; padding-top:120px; gap:28px; }
+    .hero h1{ font-size:clamp(2rem, 8vw, 2.75rem); }
+    .hero p{ font-size:1rem; margin-bottom:24px; }
+    .hero-visual{ order:-1; width:100%; max-width:320px; margin:0 auto; }
+    .photo-card{ max-width:320px; animation:none; transform:none; }
+    .scan-frame{ width:78%; }
+    .metrics{ grid-template-columns:repeat(2, minmax(0, 1fr)); margin-bottom:56px; }
+    .metric{ border-left:none; border-bottom:1px solid var(--line); }
+    .metric:nth-child(odd){ border-right:1px solid var(--line); }
+    .metric:nth-child(n+3){ border-bottom:none; }
+    .about-grid, .contact-grid{ grid-template-columns:1fr; gap:20px; }
+    .skills-grid, .projects-grid, .cert-grid{ grid-template-columns:1fr; gap:18px; }
+    .hud-panel{ padding:24px; }
+    .tl-item{ grid-template-columns:92px 20px 1fr; }
+    .tl-content{ padding-left:14px; padding-bottom:30px; }
+    .proj-card, .cert-card{ transition:none; }
+    .btn{ justify-content:center; }
+  }
+
+  @media (max-width: 640px){
+    #marquee{ height:28px; top:56px; }
+    .hero{ padding-top:110px; }
+    .cta-row{ flex-direction:column; align-items:stretch; }
+    .btn{ width:100%; }
+    .metrics{ grid-template-columns:1fr 1fr; }
+    .metric-num{ font-size:1.6rem; }
+    .sec-head h2{ font-size:1.55rem; }
+    .tl-item{ grid-template-columns:1fr; gap:10px; }
+    .tl-rail{ display:none; }
+    .tl-content{ padding:0; }
+    .contact-info a{ font-size:0.86rem; }
+  }
+
   /* ---------- boot sequence ---------- */
   #boot-overlay{
     position:fixed; inset:0; z-index:999; background:var(--bg-0);
@@ -602,6 +640,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <script>
 const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isLowPower = prefersReduced || window.matchMedia('(max-width: 900px)').matches;
 
 /* ---------- boot sequence ---------- */
 const bootOverlay = document.getElementById('boot-overlay');
@@ -619,7 +658,7 @@ function finishBoot(){
   }, 300);
 }
 
-if(prefersReduced){
+if(isLowPower){
   bootOverlay.remove();
   document.body.classList.add('booted');
 } else {
@@ -673,14 +712,15 @@ setInterval(tickClock, 1000);
 const canvas = document.getElementById('net-canvas');
 const ctx = canvas.getContext('2d');
 let w, h, nodes;
-const NODE_COUNT_BASE = 70;
+const NODE_COUNT_BASE = isLowPower ? 24 : 70;
+const MAX_DIST = isLowPower ? 110 : 150;
 
 function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize);
 resize();
 
 function initNodes(){
-  const count = Math.min(NODE_COUNT_BASE, Math.floor((w*h)/22000));
+  const count = Math.max(12, Math.min(NODE_COUNT_BASE, Math.floor((w*h)/26000)));
   nodes = Array.from({length: count}, () => ({
     x: Math.random()*w, y: Math.random()*h,
     vx: (Math.random()-0.5)*0.25, vy: (Math.random()-0.5)*0.25,
@@ -692,10 +732,9 @@ window.addEventListener('resize', () => { initNodes(); });
 
 function drawNet(){
   ctx.clearRect(0,0,w,h);
-  const maxDist = 150;
   for(let i=0;i<nodes.length;i++){
     const a = nodes[i];
-    if(!prefersReduced){
+    if(!isLowPower){
       a.x += a.vx; a.y += a.vy;
       if(a.x < 0 || a.x > w) a.vx *= -1;
       if(a.y < 0 || a.y > h) a.vy *= -1;
@@ -704,8 +743,8 @@ function drawNet(){
       const b = nodes[j];
       const dx = a.x-b.x, dy = a.y-b.y;
       const dist = Math.sqrt(dx*dx+dy*dy);
-      if(dist < maxDist){
-        const op = (1 - dist/maxDist) * 0.32;
+      if(dist < MAX_DIST){
+        const op = (1 - dist/MAX_DIST) * 0.32;
         ctx.strokeStyle = `rgba(0,255,200,${op})`;
         ctx.lineWidth = 0.6;
         ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
@@ -722,7 +761,7 @@ drawNet();
 
 /* ---------- tilt interactions ---------- */
 const photoCard = document.getElementById('photo-card');
-if(photoCard && !prefersReduced){
+if(photoCard && !isLowPower){
   window.addEventListener('mousemove', (e) => {
     const rx = (e.clientY / window.innerHeight - 0.5) * -10;
     const ry = (e.clientX / window.innerWidth - 0.5) * 14;
@@ -731,8 +770,8 @@ if(photoCard && !prefersReduced){
 }
 
 document.querySelectorAll('.tilt-card').forEach(card => {
+  if(isLowPower) return;
   card.addEventListener('mousemove', (e) => {
-    if(prefersReduced) return;
     const rect = card.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width - 0.5;
     const py = (e.clientY - rect.top) / rect.height - 0.5;
