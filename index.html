@@ -122,6 +122,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
   }
 
+  /* =====================================================================
+     RESPONSIVE TIERS
+     mobile  : ≤ 640px   -- phones
+     tablet  : 641–1023px -- iPads and similar
+     laptop  : 1024–1439px -- default/base styles below already target this
+     desktop : ≥ 1440px  -- a little extra room to breathe
+     ===================================================================== */
+
+  /* ---------- DESKTOP: give the layout a bit more room on big screens ---------- */
+  @media (min-width: 1440px){
+    section{ max-width:1320px; }
+    .hero{ gap:80px; }
+    .hero-text{ flex-basis:540px; }
+  }
+
+  /* ---------- TABLET: 641–1023px ----------
+     Tablets get tighter spacing than laptop/desktop, but keep multi-column
+     grids -- there's plenty of room, no need to stack everything into one
+     column the way a phone has to. */
+  @media (max-width: 1023px) and (min-width: 641px){
+    section{ padding:130px clamp(20px,4vw,48px) 32px; }
+    .hero{ gap:40px; padding-top:130px; }
+    .hero h1{ font-size:clamp(2.1rem, 5.5vw, 3.2rem); }
+    .metrics{ margin-bottom:64px; }
+    .sec-head{ margin-bottom:40px; }
+  }
+
+  /* ---------- MOBILE + touch tablets: ≤900px ----------
+     This is also the JS "isLowPower" cutoff, so it doubles as the
+     performance-simplification tier (canvas/marquee/loop animations off
+     below). Grid columns are intentionally NOT forced here -- the
+     auto-fit/minmax grids further down reflow to the right column count
+     on their own at every width; forcing them to 1 column here was
+     wasting space on tablets between ~700–900px. */
   @media (max-width: 900px){
     #scan-sweep, #hud-frame{ display:none; }
     nav{ padding:14px 16px; }
@@ -134,12 +168,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .device-note{ display:inline-flex; }
     .photo-card{ max-width:320px; animation:none; transform:none; }
     .scan-frame{ width:78%; }
-    .metrics{ grid-template-columns:repeat(2, minmax(0, 1fr)); margin-bottom:56px; }
-    .metric{ border-left:none; border-bottom:1px solid var(--line); }
-    .metric:nth-child(odd){ border-right:1px solid var(--line); }
-    .metric:nth-child(n+3){ border-bottom:none; }
     .about-grid, .contact-grid{ grid-template-columns:1fr; gap:20px; }
-    .skills-grid, .projects-grid, .cert-grid{ grid-template-columns:1fr; gap:18px; }
     .hud-panel{ padding:24px; }
     .tl-item{ grid-template-columns:92px 20px 1fr; }
     .tl-content{ padding-left:14px; padding-bottom:30px; }
@@ -157,9 +186,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .btn-ghost{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(8,20,17,0.85); }
     .photo-card{ backdrop-filter:none; -webkit-backdrop-filter:none; background:rgba(8,20,17,0.9); }
 
-    /* ---- perf: drop decorative infinite animations that add nothing
-       functionally but keep repainting non-composited properties
-       (top/background-position) every frame ---- */
     /* ---- simplify: strip mobile down to the essentials ----
        the particle canvas and ticking marquee are the two most complex
        moving pieces on the page. On mobile they're just noise. */
@@ -179,18 +205,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     @keyframes mobileFadeIn{ from{ opacity:0; } to{ opacity:1; } }
   }
 
+  /* ---------- MOBILE: ≤640px (phones) ---------- */
   @media (max-width: 640px){
     #marquee{ height:28px; top:56px; }
     .hero{ padding-top:110px; }
     .cta-row{ flex-direction:column; align-items:stretch; }
     .btn{ width:100%; }
-    .metrics{ grid-template-columns:1fr 1fr; }
+    .metrics{ grid-template-columns:repeat(2, minmax(0, 1fr)); margin-bottom:40px; }
+    .metric{ border-left:none; border-bottom:1px solid var(--line); }
+    .metric:nth-child(odd){ border-right:1px solid var(--line); }
+    .metric:nth-child(n+3){ border-bottom:none; }
     .metric-num{ font-size:1.6rem; }
     .sec-head h2{ font-size:1.55rem; }
+    .skills-grid, .projects-grid, .cert-grid{ grid-template-columns:1fr; }
     .tl-item{ grid-template-columns:1fr; gap:10px; }
     .tl-rail{ display:none; }
     .tl-content{ padding:0; }
     .contact-info a{ font-size:0.86rem; }
+  }
+
+  /* ---------- SMALL PHONE: ≤400px extra breathing room ---------- */
+  @media (max-width: 400px){
+    section{ padding:100px 14px 24px; }
+    .hero h1{ font-size:clamp(1.7rem, 9vw, 2.2rem); }
+    .eyebrow{ font-size:0.72rem; padding:5px 11px; }
+    .whoami-out{ font-size:0.76rem; }
+    .btn{ padding:12px 18px; font-size:0.84rem; }
+    .metric-num{ font-size:1.4rem; }
   }
 
   /* ---------- boot sequence ---------- */
